@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ComicFooter } from "@/components/comic/comic-footer"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -75,11 +74,9 @@ export default function DebugPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
+            </div>          </div>
         )}
       </div>
-      <ComicFooter />
     </main>
   )
 }

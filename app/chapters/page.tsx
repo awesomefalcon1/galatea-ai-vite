@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ComicFooter } from "@/components/comic/comic-footer"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -88,12 +87,9 @@ export default function ChaptersPage() {
                   </div>
                 </div>
               </Link>
-            ))}
-          </div>
+            ))}          </div>
         )}
       </div>
-
-      <ComicFooter />
     </main>
   )
 }

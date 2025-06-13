@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ComicProvider } from "@/app/context/comic-context"
 import { ComicHeaderWrapper } from "../components/comic/comic-header-wrapper"
+import { ComicFooter } from "../components/comic/comic-footer"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -24,6 +25,7 @@ export default function RootLayout({
         <ComicProvider>
           <ComicHeaderWrapper />
           {children}
+          <ComicFooter />
         </ComicProvider>
       </body>
     </html>

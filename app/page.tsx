@@ -9,7 +9,7 @@ export default function Home() {
     <main className="min-h-screen flex flex-col">
       {/* Hero Comic Panel */}
       <div className="flex-grow flex flex-col">
-        <div className="relative w-full h-[80vh] overflow-hidden border-y-4 border-cyber-blue/30">
+        <div className="relative w-full h-[90vh] overflow-hidden border-y-4 border-cyber-blue/30">
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-cyber-dark/80 via-transparent to-cyber-dark/80 z-10"></div>          {/* Galatea Image */}
           <Image
@@ -103,8 +103,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      <ComicFooter />
     </main>
   )
 }

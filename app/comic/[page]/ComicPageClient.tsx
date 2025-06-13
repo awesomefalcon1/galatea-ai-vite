@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ComicFooter } from "@/components/comic/comic-footer"
 import { ComicReader } from "@/components/comic/comic-reader"
 import { ComicLoadingScreen } from "@/components/comic/comic-loading-screen"
 import { comicPages } from "@/lib/comic-data"

@@ -1,4 +1,3 @@
-import { ComicFooter } from "@/components/comic/comic-footer"
 import Image from "next/image"
 
 export default function AboutPage() {
@@ -14,7 +13,6 @@ export default function AboutPage() {
           </p>
         </div>
       </div>
-
       {/* About Content */}
       <div className="flex-grow">
         <div className="container mx-auto px-4 py-12">
@@ -23,7 +21,7 @@ export default function AboutPage() {
               <Image src="/placeholder.svg?height=600&width=600" alt="Comic Studio" fill className="object-cover" />
             </div>
             <div>
-              <h2 className="text-3xl font-cyber mb-6 neon-text">THE STORY</h2>
+              <h2 className="text-3xl font-cyber mb-6 neon-text">THE SUMMARY</h2>
               <div className="space-y-4">
                 <p className="text-gray-300">
                   Galatea 2.0 is a cyberpunk reimagining of the ancient Greek myth of Pygmalion and Galatea. In the
@@ -80,12 +78,9 @@ export default function AboutPage() {
                 By reimagining an ancient myth through the lens of cyberpunk, we hope to create a story that feels both
                 timeless and urgently relevant to our rapidly evolving technological landscape.
               </p>
-            </div>
-          </div>
+            </div>          </div>
         </div>
       </div>
-
-      <ComicFooter />
     </main>
   )
 }
