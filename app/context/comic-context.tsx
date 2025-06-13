@@ -4,12 +4,24 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import type { ComicPage, ComicPanel } from "@/lib/comic-data"
 
 // Types for the context
+interface CoverData {
+  title: string
+  subtitle: string
+  image: string
+  tags: string[]
+  synopsis: string[]
+}
+
 interface ComicContextType {
   // Current state
   currentPageNumber: number
   currentPanelIndex: number
   totalPages: number
   currentPage: ComicPage | null
+  
+  // Cover data
+  coverData: CoverData | null
+  isCoverLoading: boolean
   
   // Navigation state
   prevPageLink: string | null
@@ -31,6 +43,7 @@ interface ComicContextType {
   
   // Page data management
   fetchPageData: (pageNumber: number) => Promise<void>
+  fetchCoverData: () => Promise<void>
   setPageData: (data: {
     page: ComicPage
     pageNumber: number
@@ -66,6 +79,10 @@ export function ComicProvider({ children, initialPageNumber = 1 }: ComicProvider
   const [currentPanelIndex, setCurrentPanelIndex] = useState(0)
   const [currentPage, setCurrentPage] = useState<ComicPage | null>(null)
   const [totalPages, setTotalPages] = useState(0)
+  
+  // Cover data state
+  const [coverData, setCoverData] = useState<CoverData | null>(null)
+  const [isCoverLoading, setIsCoverLoading] = useState(false)
   
   // Navigation state
   const [prevPageLink, setPrevPageLink] = useState<string | null>(null)
@@ -109,18 +126,45 @@ export function ComicProvider({ children, initialPageNumber = 1 }: ComicProvider
         setCurrentPage(null)
         setError(data.error || "Failed to load page data")
         console.error("Failed to load page data:", data.error)
-      }
-    } catch (error) {
+      }    } catch (error) {
       setCurrentPage(null)
       setError(`Error loading page: ${error instanceof Error ? error.message : String(error)}`)
       console.error("Failed to fetch comic page:", error)
     } finally {
-      // Add a slight delay to show the loading screen even if data loads quickly
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 1000)
+      setIsLoading(false)
+    }  }, [])
+  
+  // Fetch cover data from API
+  const fetchCoverData = useCallback(async () => {
+    if (coverData || isCoverLoading) {
+      // Don't fetch if we already have cover data or are currently loading
+      return
     }
-  }, [])
+    
+    setIsCoverLoading(true)
+    
+    try {
+      console.log("Fetching cover data...")
+      const response = await fetch("/api/comic/cover")
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      console.log("Cover data:", data)
+      
+      if (data.success) {
+        setCoverData(data.cover)
+      } else {
+        console.error("Failed to load cover data:", data.error)
+      }
+    } catch (error) {
+      console.error("Failed to fetch cover data:", error)
+    } finally {
+      setIsCoverLoading(false)
+    }
+  }, [coverData, isCoverLoading])
   
   // Set page data directly (for cases where data is already available)
   const setPageData = useCallback((data: {
@@ -178,14 +222,17 @@ export function ComicProvider({ children, initialPageNumber = 1 }: ComicProvider
   const setErrorState = useCallback((error: string | null) => {
     setError(error)
   }, [])
-  
-  // Context value
+    // Context value
   const contextValue: ComicContextType = {
     // Current state
     currentPageNumber,
     currentPanelIndex,
     totalPages,
     currentPage,
+    
+    // Cover data
+    coverData,
+    isCoverLoading,
     
     // Navigation state
     prevPageLink,
@@ -207,6 +254,7 @@ export function ComicProvider({ children, initialPageNumber = 1 }: ComicProvider
     
     // Page data management
     fetchPageData,
+    fetchCoverData,
     setPageData,
     setLoading,
     setError: setErrorState,

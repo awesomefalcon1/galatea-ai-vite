@@ -1,43 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from "lucide-react"
-
-interface CoverData {
-  title: string
-  subtitle: string
-  image: string
-  tags: string[]
-  synopsis: string[]
-}
+import { useComicContext } from "@/app/context/comic-context"
 
 export function ComicCover() {
-  const [coverData, setCoverData] = useState<CoverData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { coverData, isCoverLoading, fetchCoverData } = useComicContext()
 
   useEffect(() => {
-    async function fetchCoverData() {
-      try {
-        const response = await fetch("/api/comic/cover")
-        const data = await response.json()
-
-        if (data.success) {
-          setCoverData(data.cover)
-        }
-      } catch (error) {
-        console.error("Failed to fetch cover data:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     fetchCoverData()
-  }, [])
+  }, [fetchCoverData])
 
-  if (isLoading) {
+  if (isCoverLoading) {
     return (
       <div className="max-w-4xl w-full h-[600px] flex items-center justify-center">
         <div className="text-cyber-blue animate-pulse">Loading...</div>

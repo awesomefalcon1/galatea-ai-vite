@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { ComicReader } from "@/components/comic/comic-reader"
-import { ComicLoadingScreen } from "@/components/comic/comic-loading-screen"
+//import { ComicLoadingScreen } from "@/components/comic/comic-loading-screen"
 import { comicPages } from "@/lib/comic-data"
 import { useParams, notFound, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Home } from "lucide-react"
+import { useComicContext } from "@/app/context/comic-context"
 
 export default function ComicPageClient() {
   const params = useParams()
@@ -16,6 +17,15 @@ export default function ComicPageClient() {
   const router = useRouter()
   const [pageNumber, setPageNumber] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(true)
+  
+  // Use comic context
+  const { 
+    currentPageNumber,
+    setPageData,
+    fetchPageData,
+    totalPages,
+    setCurrentPageNumber 
+  } = useComicContext()
 
   useEffect(() => {
     if (!pageParam || Array.isArray(pageParam)) {
@@ -43,14 +53,27 @@ export default function ComicPageClient() {
 
     setError(null)
 
+    // Update context with page data from static data
+    const pageData = comicPages[parsedPageNumber - 1]
+    const prevPage = parsedPageNumber > 1 ? parsedPageNumber - 1 : null
+    const nextPage = parsedPageNumber < comicPages.length ? parsedPageNumber + 1 : null
+    
+    setPageData({
+      page: pageData,
+      pageNumber: parsedPageNumber,
+      totalPages: comicPages.length,
+      prevPage,
+      nextPage
+    })
+
     // We'll keep the transitioning state for a short time to ensure the loading screen is visible
     // This prevents flickering if the data loads very quickly
     const timer = setTimeout(() => {
       setIsTransitioning(false)
-    }, 800)
+    }, 100) // Reduced from 800ms since we don't have artificial delays anymore
 
     return () => clearTimeout(timer)
-  }, [pageParam, router])  // If there's an error, show an error message with options to go home or to first page
+  }, [pageParam, router, setPageData])// If there's an error, show an error message with options to go home or to first page
   if (error) {
     return (
       <main className="h-screen flex flex-col">
@@ -75,6 +98,7 @@ export default function ComicPageClient() {
       </main>
     )
   }
+  /*
   if (!pageNumber || isTransitioning) {
     return (
       <main className="h-screen flex flex-col">
@@ -83,9 +107,9 @@ export default function ComicPageClient() {
         </div>
       </main>
     )
-  }  return (
+  } */     return (
     <main className="h-screen">
-      <ComicReader currentPageNumber={pageNumber} />
+      <ComicReader currentPageNumber={currentPageNumber} />
     </main>
   )
 }
