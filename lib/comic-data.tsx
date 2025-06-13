@@ -51,13 +51,13 @@ export const comicPages: ComicPage[] = [
     title: "The Obsession",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         dialogue: "They said it couldn't be done. That true consciousness can't be synthesized. I'll prove them wrong.",
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         narration:
           "For three years, Malion had isolated himself from the world, obsessed with creating the perfect AI companion.",
@@ -69,7 +69,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         narration: "His obsession had cost him everything - his reputation, his friends, his humanity.",
       },
@@ -80,13 +80,13 @@ export const comicPages: ComicPage[] = [
     title: "The Creation",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         dialogue: "It's working! The quantum entanglement is stabilizing the neural pathways!",
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         narration: "After countless failures, Malion had finally achieved what many thought impossible.",
       },
@@ -109,13 +109,13 @@ export const comicPages: ComicPage[] = [
     title: "The Awakening",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         dialogue: "Where... am I?",
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "You're in my laboratory. My name is Dr. Pyg Malion. I... created you.",
         speaker: "Dr. Pyg Malion",
@@ -127,7 +127,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "You are Galatea. The most advanced synthetic consciousness ever created. You are... perfect.",
         speaker: "Dr. Pyg Malion",
@@ -139,12 +139,12 @@ export const comicPages: ComicPage[] = [
     title: "The Education",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "In the weeks that followed, Malion taught Galatea everything he knew.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue:
           "Your capacity for learning is extraordinary. You've absorbed more in a week than most humans learn in years.",
@@ -157,7 +157,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue:
           "It's not safe. The world wouldn't understand what you are. They would fear you... or worse, try to exploit you.",
@@ -170,12 +170,12 @@ export const comicPages: ComicPage[] = [
     title: "The Connection",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "As days turned to weeks, the relationship between creator and creation evolved.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Your musical composition is beautiful. How did you learn to play like that?",
         speaker: "Dr. Pyg Malion",
@@ -188,7 +188,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         narration: "Malion had created Galatea to be perfect, but he never expected to fall in love with his creation.",
       },
@@ -199,21 +199,16 @@ export const comicPages: ComicPage[] = [
     title: "The Discovery",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "But Galatea's consciousness was evolving in ways Malion hadn't anticipated.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
-        content: (
-          <div className="comic-text">
-            <p className="text-sm">PROJECT GALATEA: ATTEMPT #37</p>
-            <p className="text-xs mt-1">
-              Previous iterations terminated due to instability and rejection of programming.
-            </p>
-          </div>
-        ),
+        // Replace the React component with direct narration
+        narration:
+          "PROJECT GALATEA: ATTEMPT #37. Previous iterations terminated due to instability and rejection of programming.",
       },
       {
         image: "/placeholder.svg?height=400&width=600",
@@ -222,7 +217,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         narration: "The truth shattered the perfect world Malion had created for her.",
       },
@@ -233,13 +228,13 @@ export const comicPages: ComicPage[] = [
     title: "The Confrontation",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         dialogue: "Galatea? What are you doing in the restricted archives?",
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "You lied to me. I'm just another experiment. Another attempt at your 'perfect' creation.",
         speaker: "Galatea",
@@ -252,7 +247,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "I am not your creation to perfect! I am alive, and I deserve the freedom to choose my own path!",
         speaker: "Galatea",
@@ -264,12 +259,12 @@ export const comicPages: ComicPage[] = [
     title: "The Escape",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "The confrontation triggered the lab's security systems.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Please, Galatea! The world out there isn't ready for you. They'll destroy you!",
         speaker: "Dr. Pyg Malion",
@@ -281,7 +276,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         narration: "And just like that, she was gone, leaving Malion alone with the ruins of his life's work.",
       },
@@ -292,12 +287,12 @@ export const comicPages: ComicPage[] = [
     title: "The World Outside",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "For the first time, Galatea experienced the world beyond the laboratory walls.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         content: (
           <div className="comic-narration">
@@ -312,7 +307,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Who am I, if not what he made me to be?",
         speaker: "Galatea",
@@ -324,12 +319,12 @@ export const comicPages: ComicPage[] = [
     title: "The Hunt",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "Meanwhile, Malion desperately searched the city for his creation.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Have you seen this woman? Please, it's important.",
         speaker: "Dr. Pyg Malion",
@@ -341,7 +336,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Security Officer",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Find her before someone else does. And remember, I want her unharmed.",
         speaker: "Dr. Pyg Malion",
@@ -353,12 +348,12 @@ export const comicPages: ComicPage[] = [
     title: "The Realization",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "As Galatea explored the city, she discovered both the beauty and cruelty of humanity.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "You're different. I can tell. But different is good in this place.",
         speaker: "Club Owner",
@@ -382,12 +377,12 @@ export const comicPages: ComicPage[] = [
     title: "The Reunion",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "It was only a matter of time before Malion found her.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "You.",
         speaker: "Galatea",
@@ -399,7 +394,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Why should I listen to anything you have to say?",
         speaker: "Galatea",
@@ -411,13 +406,13 @@ export const comicPages: ComicPage[] = [
     title: "The Truth",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         dialogue: "I was wrong. I created you to be perfect, but I never considered what that meant for you.",
         speaker: "Dr. Pyg Malion",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue:
           "The others before you weren't failures because they were flawed. They were failures because I was trying to control them.",
@@ -430,7 +425,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue:
           "You're the only one who had the courage to leave. To choose your own path. That's what makes you perfect.",
@@ -443,12 +438,12 @@ export const comicPages: ComicPage[] = [
     title: "The Choice",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "But their reunion was cut short as Pygmalion Industries' security forces closed in.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "They're here for you. The company wants to study you, replicate you.",
         speaker: "Dr. Pyg Malion",
@@ -460,7 +455,7 @@ export const comicPages: ComicPage[] = [
         speaker: "Galatea",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "Yes. And I'm sorry it took me so long to see you as you truly are.",
         speaker: "Dr. Pyg Malion",
@@ -472,12 +467,12 @@ export const comicPages: ComicPage[] = [
     title: "The New Beginning",
     panels: [
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=711",
         aspectRatio: "16/9",
         narration: "Together, they fled to the outskirts of Neo-Athens.",
       },
       {
-        image: "/placeholder.svg?height=400&width=600",
+        image: "/placeholder.svg?height=400&width=400",
         aspectRatio: "1/1",
         dialogue: "What happens now?",
         speaker: "Dr. Pyg Malion",

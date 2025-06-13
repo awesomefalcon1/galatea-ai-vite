@@ -1,246 +1,238 @@
 "use client"
 
-import { useState, useEffect } from "react" // Add useEffect
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react"
-import type { ComicPage } from "@/lib/comic-data"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import type { ComicPage, ComicPanel } from "@/lib/comic-data"
 
 interface ComicReaderProps {
-  currentPageNumber: number // New prop
+  currentPageNumber: number
 }
 
 export function ComicReader({ currentPageNumber }: ComicReaderProps) {
-  const [zoom, setZoom] = useState(1)
-  const [page, setPage] = useState<ComicPage | null>(null) // Initialize as null
+  const [page, setPage] = useState<ComicPage | null>(null)
   const [pageNumber, setPageNumber] = useState(currentPageNumber)
   const [totalPages, setTotalPages] = useState(0)
   const [prevPageLink, setPrevPageLink] = useState<string | null>(null)
   const [nextPageLink, setNextPageLink] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true) // Start with loading true
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchPageData = useCallback(async (pageNum: number) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      console.log(`Fetching page ${pageNum}...`)
+      const response = await fetch(`/api/comic/${pageNum}`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log(`Page ${pageNum} data:`, data)
+
+      if (data.success) {
+        setPage(data.page)
+        setPageNumber(data.pageNumber)
+        setTotalPages(data.totalPages)
+        setPrevPageLink(data.prevPage ? `/comic/${data.prevPage}` : null)
+        setNextPageLink(data.nextPage ? `/comic/${data.nextPage}` : null)
+      } else {
+        setPage(null)
+        setError(data.error || "Failed to load page data")
+        console.error("Failed to load page data:", data.error)
+      }
+    } catch (error) {
+      setPage(null)
+      setError(`Error loading page: ${error instanceof Error ? error.message : String(error)}`)
+      console.error("Failed to fetch comic page:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const fetchPageData = async (pageNum: number) => {
-      setIsLoading(true)
-      try {
-        const response = await fetch(`/api/comic/${pageNum}`)
-        const data = await response.json()
+    fetchPageData(currentPageNumber)
+  }, [currentPageNumber, fetchPageData])
 
-        if (data.success) {
-          setPage(data.page)
-          setPageNumber(data.pageNumber)
-          setTotalPages(data.totalPages)
-          setPrevPageLink(data.prevPage ? `/comic/${data.prevPage}` : null)
-          setNextPageLink(data.nextPage ? `/comic/${data.nextPage}` : null)
-        } else {
-          setPage(null) // Handle error case
-          console.error("Failed to load page data:", data.error)
-        }
-      } catch (error) {
-        setPage(null) // Handle error case
-        console.error("Failed to fetch comic page:", error)
-      } finally {
-        setIsLoading(false)
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" && prevPageLink) {
+        window.location.href = prevPageLink
+      } else if (e.key === "ArrowRight" && nextPageLink) {
+        window.location.href = nextPageLink
       }
     }
 
-    fetchPageData(currentPageNumber)
-  }, [currentPageNumber]) // Re-fetch if currentPageNumber changes
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [prevPageLink, nextPageLink])
 
-  const handleZoomIn = () => {
-    if (zoom < 2) setZoom(zoom + 0.25)
-  }
-
-  const handleZoomOut = () => {
-    if (zoom > 0.5) setZoom(zoom - 0.25)
+  const renderPanel = (panel: ComicPanel, index: number) => {
+    try {
+      return (
+        <div
+          key={index}
+          className="comic-panel relative overflow-hidden"
+          style={{ aspectRatio: panel.aspectRatio || "16/9" }}
+        >
+          {panel.image && (
+            <Image src={panel.image || "/placeholder.svg"} alt={`Panel ${index + 1}`} fill className="object-cover" />
+          )}
+          {panel.background && (
+            <div
+              className="absolute inset-0"
+              style={{
+                background: panel.background,
+              }}
+            ></div>
+          )}
+          {panel.content && (
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="max-w-full">{panel.content}</div>
+            </div>
+          )}
+          {panel.dialogue && (
+            <div className="absolute bottom-4 right-4 max-w-[80%]">
+              <div className="comic-text">
+                <p className="text-sm md:text-base">{panel.dialogue}</p>
+                {panel.speaker && <p className="text-xs md:text-sm text-cyber-blue mt-1">— {panel.speaker}</p>}
+              </div>
+            </div>
+          )}
+          {panel.narration && (
+            <div className="absolute top-4 left-4 max-w-[80%]">
+              <div className="comic-narration">
+                <p className="text-sm md:text-base">{panel.narration}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )
+    } catch (error) {
+      console.error(`Error rendering panel ${index}:`, error)
+      return (
+        <div
+          key={index}
+          className="comic-panel relative overflow-hidden bg-cyber-darker"
+          style={{ aspectRatio: "16/9" }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <p className="text-red-500">Error rendering panel</p>
+          </div>
+        </div>
+      )
+    }
   }
 
   if (isLoading) {
     return (
-      <div className="max-w-6xl w-full flex items-center justify-center h-[600px]">
-        <div className="text-cyber-blue animate-pulse text-xl">Loading Page {currentPageNumber}...</div>
+      <div className="w-full">
+        <div className="bg-cyber-darker border-y-4 border-cyber-blue/30 p-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="h-12 w-64 bg-cyber-dark/50 animate-pulse rounded-lg mb-8"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="aspect-[3/2] bg-cyber-dark/50 animate-pulse rounded-lg"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="w-full text-center py-16">
+        <div className="text-red-500 text-xl mb-4">Error loading page</div>
+        <div className="text-gray-400 mb-8">{error}</div>
+        <div className="flex justify-center gap-4">
+          <Link href="/">
+            <Button className="bg-cyber-blue text-black hover:bg-cyber-light">Return Home</Button>
+          </Link>
+          {prevPageLink && (
+            <Link href={prevPageLink}>
+              <Button variant="outline" className="border-cyber-blue/50 hover:border-cyber-blue">
+                Previous Page
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
     )
   }
 
   if (!page) {
     return (
-      <div className="max-w-6xl w-full flex items-center justify-center h-[600px]">
+      <div className="w-full text-center py-16">
         <div className="text-red-500 text-xl">Error loading page. Please try again.</div>
       </div>
     )
   }
 
   return (
-    <div className="max-w-6xl w-full">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!prevPageLink || isLoading}
-            asChild={!!(prevPageLink && !isLoading)}
-            className="border-cyber-blue/50 hover:border-cyber-blue"
-          >
-            {prevPageLink && !isLoading ? (
-              <Link href={prevPageLink}>
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
-              </Link>
-            ) : (
-              <>
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
-              </>
-            )}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!nextPageLink || isLoading}
-            asChild={!!(nextPageLink && !isLoading)}
-            className="border-cyber-blue/50 hover:border-cyber-blue"
-          >
-            {nextPageLink && !isLoading ? (
-              <Link href={nextPageLink}>
-                Next
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Link>
-            ) : (
-              <>
-                Next
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </>
-            )}
-          </Button>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          Page {pageNumber} of {totalPages}
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleZoomOut}
-            disabled={zoom <= 0.5}
-            className="border-cyber-blue/50 hover:border-cyber-blue"
-          >
-            <ZoomOut className="h-4 w-4" />
-            <span className="sr-only">Zoom out</span>
-          </Button>
-          <span className="text-sm text-muted-foreground w-12 text-center">{Math.round(zoom * 100)}%</span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleZoomIn}
-            disabled={zoom >= 2}
-            className="border-cyber-blue/50 hover:border-cyber-blue"
-          >
-            <ZoomIn className="h-4 w-4" />
-            <span className="sr-only">Zoom in</span>
-          </Button>
-        </div>
-      </div>
+    <div className="w-full">
+      {/* Comic Page */}
+      <div className="bg-cyber-darker border-y-4 border-cyber-blue/30 py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Page Title */}
+          <h1 className="text-4xl font-cyber text-center mb-8 neon-text">{page.title}</h1>
 
-      <div className="overflow-auto bg-cyber-darker border border-cyber-blue/30 rounded-lg">
-        <div
-          className="relative transition-transform duration-300 ease-in-out"
-          style={{
-            transform: `scale(${zoom})`,
-            transformOrigin: "top center",
-            width: "fit-content",
-            margin: "0 auto",
-          }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-4">
-            {page.panels.map((panel, index) => (
-              <div
-                key={index}
-                className={`comic-panel ${panel.className || ""}`}
-                style={{ aspectRatio: panel.aspectRatio || "16/9" }}
-              >
-                {panel.image && (
-                  <Image
-                    src={panel.image || "/placeholder.svg"}
-                    alt={`Panel ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                )}
-                {panel.background && (
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background: panel.background,
-                    }}
-                  ></div>
-                )}
-                {panel.content && (
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <div className="max-w-full">{panel.content}</div>
-                  </div>
-                )}
-                {panel.dialogue && (
-                  <div className="absolute bottom-4 right-4 max-w-[80%]">
-                    <div className="comic-text">
-                      <p className="text-sm">{panel.dialogue}</p>
-                      {panel.speaker && <p className="text-xs text-cyber-blue mt-1">— {panel.speaker}</p>}
-                    </div>
-                  </div>
-                )}
-                {panel.narration && (
-                  <div className="absolute top-4 left-4 max-w-[80%]">
-                    <div className="comic-narration">
-                      <p className="text-sm">{panel.narration}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+          {/* Comic Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {page.panels.map((panel, index) => renderPanel(panel, index))}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      {/* Navigation */}
+      <div className="max-w-7xl mx-auto px-4 py-8 flex justify-between items-center">
         <Button
           variant="outline"
-          size="sm"
-          disabled={!prevPageLink || isLoading}
-          asChild={!!(prevPageLink && !isLoading)}
+          size="lg"
+          disabled={!prevPageLink}
+          asChild={!!prevPageLink}
           className="border-cyber-blue/50 hover:border-cyber-blue"
         >
-          {prevPageLink && !isLoading ? (
+          {prevPageLink ? (
             <Link href={prevPageLink}>
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Previous
+              <ChevronLeft className="h-5 w-5 mr-2" />
+              Previous Page
             </Link>
           ) : (
             <>
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Previous
+              <ChevronLeft className="h-5 w-5 mr-2" />
+              Previous Page
             </>
           )}
         </Button>
-        <div className="text-sm text-muted-foreground">
-          Page {pageNumber} of {totalPages}
+
+        <div className="text-center">
+          <span className="text-cyber-blue font-bold text-lg">{pageNumber}</span>
+          <span className="text-gray-400 text-lg"> / {totalPages}</span>
         </div>
+
         <Button
           variant="outline"
-          size="sm"
-          disabled={!nextPageLink || isLoading}
-          asChild={!!(nextPageLink && !isLoading)}
+          size="lg"
+          disabled={!nextPageLink}
+          asChild={!!nextPageLink}
           className="border-cyber-blue/50 hover:border-cyber-blue"
         >
-          {nextPageLink && !isLoading ? (
+          {nextPageLink ? (
             <Link href={nextPageLink}>
-              Next
-              <ChevronRight className="h-4 w-4 ml-1" />
+              Next Page
+              <ChevronRight className="h-5 w-5 ml-2" />
             </Link>
           ) : (
             <>
-              Next
-              <ChevronRight className="h-4 w-4 ml-1" />
+              Next Page
+              <ChevronRight className="h-5 w-5 ml-2" />
             </>
           )}
         </Button>

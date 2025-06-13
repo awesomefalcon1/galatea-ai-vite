@@ -3,7 +3,7 @@ import { Github, Twitter } from "lucide-react"
 
 export function ComicFooter() {
   return (
-    <footer className="border-t border-cyber-blue/20 py-6">
+    <footer className="border-t-2 border-cyber-blue/30 py-6 bg-cyber-dark">
       <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex flex-col items-center md:items-start">
           <p className="text-sm text-muted-foreground">

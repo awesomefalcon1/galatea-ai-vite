@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react" // Add useState, useEffect
+import { useState, useEffect } from "react"
 import { ComicHeader } from "@/components/comic-header"
 import { ComicFooter } from "@/components/comic-footer"
 import Link from "next/link"
@@ -22,7 +22,7 @@ export default function ChaptersPage() {
     async function fetchChapters() {
       setIsLoading(true)
       try {
-        const res = await fetch(`/api/chapters`) // Use relative path
+        const res = await fetch(`/api/chapters`)
         if (!res.ok) {
           throw new Error("Failed to fetch chapters")
         }
@@ -47,9 +47,19 @@ export default function ChaptersPage() {
   return (
     <main className="min-h-screen flex flex-col">
       <ComicHeader />
-      <div className="flex-grow container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-cyber mb-8 neon-text text-center">Chapters</h1>
 
+      {/* Chapter Header */}
+      <div className="w-full bg-cyber-darker border-y-4 border-cyber-blue/30 py-12">
+        <div className="container mx-auto px-4">
+          <h1 className="text-5xl font-cyber mb-4 neon-text text-center">CHAPTERS</h1>
+          <p className="text-xl text-cyber-blue text-center max-w-2xl mx-auto">
+            The complete story of Galatea 2.0, a cyberpunk retelling of the Pygmalion myth
+          </p>
+        </div>
+      </div>
+
+      {/* Chapters Grid */}
+      <div className="flex-grow container mx-auto px-4 py-12">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="text-cyber-blue animate-pulse text-xl">Loading Chapters...</div>
@@ -57,10 +67,10 @@ export default function ChaptersPage() {
         ) : chapters.length === 0 ? (
           <div className="text-center text-gray-400 text-xl">No chapters found or failed to load.</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {chapters.map((chapter) => (
               <Link key={chapter.id} href={`/comic/${chapter.coverPage}`} className="group">
-                <div className="bg-cyber-darker border border-cyber-blue/30 rounded-lg overflow-hidden transition-all duration-300 group-hover:border-cyber-blue/80 group-hover:shadow-[0_0_15px_rgba(0,255,255,0.3)]">
+                <div className="comic-panel h-full transition-all duration-300 group-hover:border-cyber-blue/80 group-hover:shadow-[0_0_15px_rgba(0,255,255,0.3)]">
                   <div className="relative aspect-[3/4] w-full">
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cyber-dark/90 z-10"></div>
                     <Image
@@ -69,18 +79,15 @@ export default function ChaptersPage() {
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-                      <h2 className="text-xl font-bold text-cyber-blue">{chapter.title}</h2>
-                      <p className="text-gray-300 text-sm">{chapter.subtitle}</p>
+                    <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+                      <h2 className="text-2xl font-bold text-cyber-blue">{chapter.title}</h2>
+                      <p className="text-gray-300 text-lg">{chapter.subtitle}</p>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <p className="text-sm text-gray-400">
-                      Pages: {chapter.pages[0]} - {chapter.pages[chapter.pages.length - 1]}
-                    </p>
-                    <div className="mt-3 flex justify-between items-center">
-                      <span className="text-cyber-pink text-sm">Read Now</span>
-                      <span className="text-xs text-gray-500">{chapter.pages.length} pages</span>
+                  <div className="p-6">
+                    <div className="flex justify-between items-center">
+                      <span className="text-cyber-pink text-lg font-bold">READ NOW</span>
+                      <span className="text-sm text-gray-500">{chapter.pages.length} pages</span>
                     </div>
                   </div>
                 </div>
@@ -89,6 +96,7 @@ export default function ChaptersPage() {
           </div>
         )}
       </div>
+
       <ComicFooter />
     </main>
   )
