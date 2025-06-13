@@ -171,6 +171,66 @@
   }
 }
 
+/* Loading screen animations */
+@keyframes glitch-horizontal {
+  0% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(-2px);
+  }
+}
+
+@keyframes glitch-vertical {
+  0% {
+    transform: translateY(-1px);
+  }
+  50% {
+    transform: translateY(1px);
+  }
+  100% {
+    transform: translateY(-1px);
+  }
+}
+
+.glitch-line {
+  animation: glitch-horizontal 0.2s infinite;
+  opacity: 0.8;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+.glitch-text {
+  position: relative;
+  animation: glitch-vertical 0.3s infinite;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 #00ffff;
+  clip-path: inset(0 0 50% 0);
+  animation: glitch-animation 0.4s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: 1px 0 #ff0080;
+  clip-path: inset(50% 0 0 0);
+  animation: glitch-animation 0.3s infinite linear alternate-reverse;
+}
+
 .comic-panel {
   @apply relative overflow-hidden border-2 border-gray-800 bg-gray-900;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
@@ -194,17 +254,17 @@
 }
 
 .comic-text {
-  @apply font-bold text-white p-3 rounded;
+  @apply font-bold text-white p-4 rounded;
   background-color: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 0 0 5px rgba(0, 255, 255, 0.3);
 }
 
 .comic-narration {
-  @apply italic text-cyan-300 p-3 rounded;
+  @apply italic text-cyan-300 p-4 rounded;
   background-color: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(255, 0, 128, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 0, 128, 0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 0 0 5px rgba(255, 0, 128, 0.3);
 }
 
 .scan-line {
@@ -279,4 +339,72 @@
 .page-turn-exit-active {
   opacity: 0;
   transform: translateX(-100%);
+}
+
+.panel-transition-enter {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.panel-transition-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.panel-transition-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.panel-transition-exit-active {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Fullscreen mode enhancements */
+.fullscreen-comic {
+  background-color: #050714;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreen-comic .comic-panel {
+  flex: 1;
+  border: none;
+  box-shadow: none;
+}
+
+/* Navigation button hover effects */
+.nav-button {
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  opacity: 0.7;
+}
+
+.nav-button:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Panel indicator animation */
+@keyframes pulse-indicator {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+.active-panel-indicator {
+  animation: pulse-indicator 2s infinite;
 }

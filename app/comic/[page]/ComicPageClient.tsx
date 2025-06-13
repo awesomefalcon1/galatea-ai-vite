@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { ComicHeader } from "@/components/comic-header"
 import { ComicFooter } from "@/components/comic-footer"
 import { ComicReader } from "@/components/comic-reader"
+import { ComicLoadingScreen } from "@/components/comic-loading-screen"
 import { comicPages } from "@/lib/comic-data"
 import { useParams, notFound, useRouter } from "next/navigation"
 import Link from "next/link"
@@ -16,6 +17,7 @@ export default function ComicPageClient() {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const [pageNumber, setPageNumber] = useState<number | null>(null)
+  const [isTransitioning, setIsTransitioning] = useState(true)
 
   useEffect(() => {
     if (!pageParam || Array.isArray(pageParam)) {
@@ -23,20 +25,33 @@ export default function ComicPageClient() {
       return
     }
 
+    // Set transitioning state when page param changes
+    setIsTransitioning(true)
+
     const parsedPageNumber = Number.parseInt(pageParam)
     setPageNumber(parsedPageNumber)
 
     if (isNaN(parsedPageNumber)) {
       setError("Invalid page number")
+      setIsTransitioning(false)
       return
     }
 
     if (parsedPageNumber < 1 || parsedPageNumber > comicPages.length) {
       setError(`Page ${parsedPageNumber} not found. Available pages: 1-${comicPages.length}`)
+      setIsTransitioning(false)
       return
     }
 
     setError(null)
+
+    // We'll keep the transitioning state for a short time to ensure the loading screen is visible
+    // This prevents flickering if the data loads very quickly
+    const timer = setTimeout(() => {
+      setIsTransitioning(false)
+    }, 800)
+
+    return () => clearTimeout(timer)
   }, [pageParam, router])
 
   // If there's an error, show an error message with options to go home or to first page
@@ -68,8 +83,16 @@ export default function ComicPageClient() {
     )
   }
 
-  if (!pageNumber) {
-    return null // Or a loading state
+  if (!pageNumber || isTransitioning) {
+    return (
+      <main className="min-h-screen flex flex-col">
+        <ComicHeader />
+        <div className="flex-grow">
+          <ComicLoadingScreen pageNumber={pageNumber || 0} />
+        </div>
+        <ComicFooter />
+      </main>
+    )
   }
 
   return (

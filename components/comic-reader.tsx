@@ -4,14 +4,17 @@ import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight, Maximize2, Minimize2 } from "lucide-react"
 import type { ComicPage, ComicPanel } from "@/lib/comic-data"
+import { ComicLoadingScreen } from "@/components/comic-loading-screen"
+import { useRouter } from "next/navigation"
 
 interface ComicReaderProps {
   currentPageNumber: number
 }
 
 export function ComicReader({ currentPageNumber }: ComicReaderProps) {
+  const router = useRouter()
   const [page, setPage] = useState<ComicPage | null>(null)
   const [pageNumber, setPageNumber] = useState(currentPageNumber)
   const [totalPages, setTotalPages] = useState(0)
@@ -19,6 +22,8 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
   const [nextPageLink, setNextPageLink] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentPanelIndex, setCurrentPanelIndex] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   const fetchPageData = useCallback(async (pageNum: number) => {
     setIsLoading(true)
@@ -40,6 +45,7 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
         setTotalPages(data.totalPages)
         setPrevPageLink(data.prevPage ? `/comic/${data.prevPage}` : null)
         setNextPageLink(data.nextPage ? `/comic/${data.nextPage}` : null)
+        setCurrentPanelIndex(0) // Reset to first panel when changing pages
       } else {
         setPage(null)
         setError(data.error || "Failed to load page data")
@@ -50,7 +56,10 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
       setError(`Error loading page: ${error instanceof Error ? error.message : String(error)}`)
       console.error("Failed to fetch comic page:", error)
     } finally {
-      setIsLoading(false)
+      // Add a slight delay to show the loading screen even if data loads quickly
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
     }
   }, [])
 
@@ -61,27 +70,77 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft" && prevPageLink) {
-        window.location.href = prevPageLink
-      } else if (e.key === "ArrowRight" && nextPageLink) {
-        window.location.href = nextPageLink
+      if (!page) return
+
+      if (e.key === "ArrowLeft") {
+        if (currentPanelIndex > 0) {
+          setCurrentPanelIndex(currentPanelIndex - 1)
+        } else if (prevPageLink) {
+          navigateToPage(prevPageLink)
+        }
+      } else if (e.key === "ArrowRight") {
+        if (currentPanelIndex < page.panels.length - 1) {
+          setCurrentPanelIndex(currentPanelIndex + 1)
+        } else if (nextPageLink) {
+          navigateToPage(nextPageLink)
+        }
+      } else if (e.key === "f") {
+        toggleFullscreen()
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [prevPageLink, nextPageLink])
+  }, [prevPageLink, nextPageLink, currentPanelIndex, page])
 
-  const renderPanel = (panel: ComicPanel, index: number) => {
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`)
+      })
+      setIsFullscreen(true)
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+        setIsFullscreen(false)
+      }
+    }
+  }
+
+  // Use Next.js router for smoother page transitions
+  const navigateToPage = (path: string) => {
+    router.push(path)
+  }
+
+  const nextPanel = () => {
+    if (!page) return
+    if (currentPanelIndex < page.panels.length - 1) {
+      setCurrentPanelIndex(currentPanelIndex + 1)
+    } else if (nextPageLink) {
+      navigateToPage(nextPageLink)
+    }
+  }
+
+  const prevPanel = () => {
+    if (currentPanelIndex > 0) {
+      setCurrentPanelIndex(currentPanelIndex - 1)
+    } else if (prevPageLink) {
+      navigateToPage(prevPageLink)
+    }
+  }
+
+  const renderPanel = (panel: ComicPanel) => {
     try {
       return (
-        <div
-          key={index}
-          className="comic-panel relative overflow-hidden"
-          style={{ aspectRatio: panel.aspectRatio || "16/9" }}
-        >
+        <div className="relative w-full h-full">
           {panel.image && (
-            <Image src={panel.image || "/placeholder.svg"} alt={`Panel ${index + 1}`} fill className="object-cover" />
+            <Image
+              src={panel.image || "/placeholder.svg"}
+              alt={`Panel ${currentPanelIndex + 1}`}
+              fill
+              className="object-contain"
+              priority
+            />
           )}
           {panel.background && (
             <div
@@ -97,53 +156,34 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
             </div>
           )}
           {panel.dialogue && (
-            <div className="absolute bottom-4 right-4 max-w-[80%]">
+            <div className="absolute bottom-8 right-8 max-w-[80%] z-10">
               <div className="comic-text">
-                <p className="text-sm md:text-base">{panel.dialogue}</p>
-                {panel.speaker && <p className="text-xs md:text-sm text-cyber-blue mt-1">— {panel.speaker}</p>}
+                <p className="text-base md:text-lg">{panel.dialogue}</p>
+                {panel.speaker && <p className="text-sm md:text-base text-cyber-blue mt-1">— {panel.speaker}</p>}
               </div>
             </div>
           )}
           {panel.narration && (
-            <div className="absolute top-4 left-4 max-w-[80%]">
+            <div className="absolute top-8 left-8 max-w-[80%] z-10">
               <div className="comic-narration">
-                <p className="text-sm md:text-base">{panel.narration}</p>
+                <p className="text-base md:text-lg">{panel.narration}</p>
               </div>
             </div>
           )}
         </div>
       )
     } catch (error) {
-      console.error(`Error rendering panel ${index}:`, error)
+      console.error(`Error rendering panel:`, error)
       return (
-        <div
-          key={index}
-          className="comic-panel relative overflow-hidden bg-cyber-darker"
-          style={{ aspectRatio: "16/9" }}
-        >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-red-500">Error rendering panel</p>
-          </div>
+        <div className="relative w-full h-full bg-cyber-darker flex items-center justify-center">
+          <p className="text-red-500">Error rendering panel</p>
         </div>
       )
     }
   }
 
   if (isLoading) {
-    return (
-      <div className="w-full">
-        <div className="bg-cyber-darker border-y-4 border-cyber-blue/30 p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="h-12 w-64 bg-cyber-dark/50 animate-pulse rounded-lg mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-[3/2] bg-cyber-dark/50 animate-pulse rounded-lg"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    return <ComicLoadingScreen pageNumber={currentPageNumber} />
   }
 
   if (error) {
@@ -156,18 +196,20 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
             <Button className="bg-cyber-blue text-black hover:bg-cyber-light">Return Home</Button>
           </Link>
           {prevPageLink && (
-            <Link href={prevPageLink}>
-              <Button variant="outline" className="border-cyber-blue/50 hover:border-cyber-blue">
-                Previous Page
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              className="border-cyber-blue/50 hover:border-cyber-blue"
+              onClick={() => navigateToPage(prevPageLink)}
+            >
+              Previous Page
+            </Button>
           )}
         </div>
       </div>
     )
   }
 
-  if (!page) {
+  if (!page || !page.panels || page.panels.length === 0) {
     return (
       <div className="w-full text-center py-16">
         <div className="text-red-500 text-xl">Error loading page. Please try again.</div>
@@ -175,67 +217,145 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
     )
   }
 
+  const currentPanel = page.panels[currentPanelIndex]
+  const totalPanels = page.panels.length
+
   return (
     <div className="w-full">
-      {/* Comic Page */}
-      <div className="bg-cyber-darker border-y-4 border-cyber-blue/30 py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Page Title */}
-          <h1 className="text-4xl font-cyber text-center mb-8 neon-text">{page.title}</h1>
-
-          {/* Comic Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {page.panels.map((panel, index) => renderPanel(panel, index))}
+      {/* Page Title */}
+      <div className="bg-cyber-darker border-b-2 border-cyber-blue/30 py-4">
+        <div className="container mx-auto px-4">
+          <h1 className="text-3xl font-cyber text-center neon-text">{page.title}</h1>
+          <div className="text-center text-cyber-blue mt-2">
+            Panel {currentPanelIndex + 1} of {totalPanels}
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="max-w-7xl mx-auto px-4 py-8 flex justify-between items-center">
-        <Button
-          variant="outline"
-          size="lg"
-          disabled={!prevPageLink}
-          asChild={!!prevPageLink}
-          className="border-cyber-blue/50 hover:border-cyber-blue"
-        >
-          {prevPageLink ? (
-            <Link href={prevPageLink}>
-              <ChevronLeft className="h-5 w-5 mr-2" />
-              Previous Page
-            </Link>
-          ) : (
-            <>
-              <ChevronLeft className="h-5 w-5 mr-2" />
-              Previous Page
-            </>
-          )}
-        </Button>
-
-        <div className="text-center">
-          <span className="text-cyber-blue font-bold text-lg">{pageNumber}</span>
-          <span className="text-gray-400 text-lg"> / {totalPages}</span>
+      {/* Comic Panel Slideshow */}
+      <div className="relative bg-cyber-dark">
+        {/* Full-screen panel */}
+        <div className="relative h-[80vh] w-full overflow-hidden">
+          <div className="absolute inset-0 transition-opacity duration-300 ease-in-out">
+            {currentPanel && renderPanel(currentPanel)}
+          </div>
         </div>
 
+        {/* Navigation Controls */}
+        <div className="absolute inset-0 flex items-center justify-between pointer-events-none">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50 pointer-events-auto ml-4 nav-button"
+            onClick={prevPanel}
+            disabled={currentPanelIndex === 0 && !prevPageLink}
+          >
+            <ArrowLeft className="h-8 w-8" />
+            <span className="sr-only">Previous Panel</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50 pointer-events-auto mr-4 nav-button"
+            onClick={nextPanel}
+            disabled={currentPanelIndex === totalPanels - 1 && !nextPageLink}
+          >
+            <ArrowRight className="h-8 w-8" />
+            <span className="sr-only">Next Panel</span>
+          </Button>
+        </div>
+
+        {/* Fullscreen Toggle */}
         <Button
-          variant="outline"
-          size="lg"
-          disabled={!nextPageLink}
-          asChild={!!nextPageLink}
-          className="border-cyber-blue/50 hover:border-cyber-blue"
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/30 text-white hover:bg-black/50 nav-button"
+          onClick={toggleFullscreen}
         >
-          {nextPageLink ? (
-            <Link href={nextPageLink}>
-              Next Page
-              <ChevronRight className="h-5 w-5 ml-2" />
-            </Link>
-          ) : (
-            <>
-              Next Page
-              <ChevronRight className="h-5 w-5 ml-2" />
-            </>
-          )}
+          {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+          <span className="sr-only">{isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}</span>
         </Button>
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="bg-cyber-darker border-t-2 border-cyber-blue/30 py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPanelIndex === 0 && !prevPageLink}
+                onClick={prevPanel}
+                className="border-cyber-blue/50 hover:border-cyber-blue mr-2"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPanelIndex === totalPanels - 1 && !nextPageLink}
+                onClick={nextPanel}
+                className="border-cyber-blue/50 hover:border-cyber-blue"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+
+            <div className="text-center">
+              <span className="text-cyber-blue">Page {pageNumber}</span>
+              <span className="text-gray-400"> / {totalPages}</span>
+            </div>
+
+            <div className="flex items-center">
+              {prevPageLink && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-cyber-blue/50 hover:border-cyber-blue mr-2"
+                  onClick={() => navigateToPage(prevPageLink)}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous Page
+                </Button>
+              )}
+
+              {nextPageLink && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-cyber-blue/50 hover:border-cyber-blue"
+                  onClick={() => navigateToPage(nextPageLink)}
+                >
+                  Next Page
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Panel Indicator */}
+      <div className="bg-cyber-darker py-2 border-t border-cyber-blue/10">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center">
+            {page.panels.map((_, index) => (
+              <button
+                key={index}
+                className={`h-2 w-8 mx-1 rounded-full transition-colors ${
+                  index === currentPanelIndex ? "bg-cyber-blue active-panel-indicator" : "bg-gray-700 hover:bg-gray-600"
+                }`}
+                onClick={() => setCurrentPanelIndex(index)}
+                aria-label={`Go to panel ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
