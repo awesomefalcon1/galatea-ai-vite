@@ -53,11 +53,12 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        aura: {
-          blue: "#3CDFFF",
-          purple: "#D896FF",
-          dark: "#0A0C1B",
-          darker: "#050714",
+        cyber: {
+          blue: "#00ffff",
+          pink: "#ff0080",
+          dark: "#050714",
+          darker: "#030409",
+          light: "#c0fdff",
         },
       },
       borderRadius: {
@@ -74,24 +75,26 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        flow: {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
+        flicker: {
+          "0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%": {
+            opacity: "0.99",
+            filter: "brightness(1)",
+          },
+          "20%, 21.999%, 63%, 63.999%, 65%, 69.999%": {
+            opacity: "0.4",
+            filter: "brightness(0.8)",
+          },
         },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "0.6" },
-          "50%": { opacity: "1" },
+        pulse: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        flow: "flow 15s ease infinite",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "aura-gradient": "linear-gradient(90deg, #3CDFFF 0%, #A78BFA 50%, #D896FF 100%)",
+        flicker: "flicker 3s linear infinite",
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },

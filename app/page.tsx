@@ -1,23 +1,15 @@
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { HeroSection } from "@/components/hero-section"
-import { FeaturesSection } from "@/components/features-section"
-import { HowItWorks } from "@/components/how-it-works"
-import { TestimonialsSection } from "@/components/testimonials"
-import { SimulationPreview } from "@/components/simulation-preview"
-import { CTASection } from "@/components/cta-section"
+import { ComicHeader } from "@/components/comic-header"
+import { ComicFooter } from "@/components/comic-footer"
+import { ComicCover } from "@/components/comic-cover"
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Navbar />
-      <HeroSection />
-      <FeaturesSection />
-      <HowItWorks />
-      <SimulationPreview />
-      <TestimonialsSection />
-      <CTASection />
-      <Footer />
+    <main className="min-h-screen flex flex-col">
+      <ComicHeader />
+      <div className="flex-grow flex items-center justify-center p-4">
+        <ComicCover />
+      </div>
+      <ComicFooter />
     </main>
   )
 }

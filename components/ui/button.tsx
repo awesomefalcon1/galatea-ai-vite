@@ -15,7 +15,8 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        gradient: "aura-button text-white font-medium",
+        gradient:
+          "relative overflow-hidden bg-cyber-dark border border-cyber-blue/50 text-white hover:border-cyber-blue transition-colors",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -40,6 +41,17 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+
+    // Add gradient effect for gradient variant
+    if (variant === "gradient") {
+      return (
+        <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
+          <span className="relative z-10">{props.children}</span>
+          <span className="absolute inset-0 bg-gradient-to-r from-cyber-blue to-cyber-pink opacity-30 hover:opacity-50 transition-opacity"></span>
+        </Comp>
+      )
+    }
+
     return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
   },
 )
