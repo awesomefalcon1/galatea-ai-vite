@@ -2,8 +2,9 @@ import { NextResponse } from "next/server"
 import { comicPages } from "@/lib/comic-data"
 
 export async function GET(request: Request, { params }: { params: { page: string } }) {
-  const pageNumber = Number.parseInt(params.page)
-
+  const { page } = await params
+  const pageNumber = Number.parseInt(page)
+  console.log("Requested page number:", pageNumber)
   if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > comicPages.length) {
     return NextResponse.json({ success: false, error: "Page not found" }, { status: 404 })
   }

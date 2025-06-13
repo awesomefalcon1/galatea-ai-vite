@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight, Maximize2, Minimize2 } from "lucide-react"
-import type { ComicPage, ComicPanel } from "@/lib/comic-data"
-import { ComicLoadingScreen } from "@/components/comic-loading-screen"
+import type { ComicPanel } from "@/lib/comic-data"
+import { ComicLoadingScreen } from "@/components/comic/comic-loading-screen"
 import { useRouter } from "next/navigation"
+import { useComicContext } from "@/app/context/comic-context"
 
 interface ComicReaderProps {
   currentPageNumber: number
@@ -15,54 +16,28 @@ interface ComicReaderProps {
 
 export function ComicReader({ currentPageNumber }: ComicReaderProps) {
   const router = useRouter()
-  const [page, setPage] = useState<ComicPage | null>(null)
-  const [pageNumber, setPageNumber] = useState(currentPageNumber)
-  const [totalPages, setTotalPages] = useState(0)
-  const [prevPageLink, setPrevPageLink] = useState<string | null>(null)
-  const [nextPageLink, setNextPageLink] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [currentPanelIndex, setCurrentPanelIndex] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
-
-  const fetchPageData = useCallback(async (pageNum: number) => {
-    setIsLoading(true)
-    setError(null)
-    try {
-      console.log(`Fetching page ${pageNum}...`)
-      const response = await fetch(`/api/comic/${pageNum}`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log(`Page ${pageNum} data:`, data)
-
-      if (data.success) {
-        setPage(data.page)
-        setPageNumber(data.pageNumber)
-        setTotalPages(data.totalPages)
-        setPrevPageLink(data.prevPage ? `/comic/${data.prevPage}` : null)
-        setNextPageLink(data.nextPage ? `/comic/${data.nextPage}` : null)
-        setCurrentPanelIndex(0) // Reset to first panel when changing pages
-      } else {
-        setPage(null)
-        setError(data.error || "Failed to load page data")
-        console.error("Failed to load page data:", data.error)
-      }
-    } catch (error) {
-      setPage(null)
-      setError(`Error loading page: ${error instanceof Error ? error.message : String(error)}`)
-      console.error("Failed to fetch comic page:", error)
-    } finally {
-      // Add a slight delay to show the loading screen even if data loads quickly
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 1000)
-    }
-  }, [])
-
+  
+  // Use comic context for state management
+  const {
+    currentPage: page,
+    currentPageNumber: pageNumber,
+    currentPanelIndex,
+    totalPages,
+    totalPanels,
+    currentPanel,
+    prevPageLink,
+    nextPageLink,
+    isLoading,
+    error,
+    nextPanel: contextNextPanel,
+    prevPanel: contextPrevPanel,
+    setCurrentPanelIndex,
+    fetchPageData,
+    navigateToPage: contextNavigateToPage
+  } = useComicContext()
+  
+  // Initialize with the current page number
   useEffect(() => {
     fetchPageData(currentPageNumber)
   }, [currentPageNumber, fetchPageData])
@@ -73,17 +48,9 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
       if (!page) return
 
       if (e.key === "ArrowLeft") {
-        if (currentPanelIndex > 0) {
-          setCurrentPanelIndex(currentPanelIndex - 1)
-        } else if (prevPageLink) {
-          navigateToPage(prevPageLink)
-        }
+        contextPrevPanel()
       } else if (e.key === "ArrowRight") {
-        if (currentPanelIndex < page.panels.length - 1) {
-          setCurrentPanelIndex(currentPanelIndex + 1)
-        } else if (nextPageLink) {
-          navigateToPage(nextPageLink)
-        }
+        contextNextPanel()
       } else if (e.key === "f") {
         toggleFullscreen()
       }
@@ -91,7 +58,7 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [prevPageLink, nextPageLink, currentPanelIndex, page])
+  }, [page, contextPrevPanel, contextNextPanel])
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -110,23 +77,6 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
   // Use Next.js router for smoother page transitions
   const navigateToPage = (path: string) => {
     router.push(path)
-  }
-
-  const nextPanel = () => {
-    if (!page) return
-    if (currentPanelIndex < page.panels.length - 1) {
-      setCurrentPanelIndex(currentPanelIndex + 1)
-    } else if (nextPageLink) {
-      navigateToPage(nextPageLink)
-    }
-  }
-
-  const prevPanel = () => {
-    if (currentPanelIndex > 0) {
-      setCurrentPanelIndex(currentPanelIndex - 1)
-    } else if (prevPageLink) {
-      navigateToPage(prevPageLink)
-    }
   }
 
   const renderPanel = (panel: ComicPanel) => {
@@ -217,21 +167,8 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
     )
   }
 
-  const currentPanel = page.panels[currentPanelIndex]
-  const totalPanels = page.panels.length
-
   return (
     <div className="w-full">
-      {/* Page Title */}
-      <div className="bg-cyber-darker border-b-2 border-cyber-blue/30 py-4">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-cyber text-center neon-text">{page.title}</h1>
-          <div className="text-center text-cyber-blue mt-2">
-            Panel {currentPanelIndex + 1} of {totalPanels}
-          </div>
-        </div>
-      </div>
-
       {/* Comic Panel Slideshow */}
       <div className="relative bg-cyber-dark">
         {/* Full-screen panel */}
@@ -247,7 +184,7 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
             variant="ghost"
             size="icon"
             className="h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50 pointer-events-auto ml-4 nav-button"
-            onClick={prevPanel}
+            onClick={contextPrevPanel}
             disabled={currentPanelIndex === 0 && !prevPageLink}
           >
             <ArrowLeft className="h-8 w-8" />
@@ -258,7 +195,7 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
             variant="ghost"
             size="icon"
             className="h-16 w-16 rounded-full bg-black/30 text-white hover:bg-black/50 pointer-events-auto mr-4 nav-button"
-            onClick={nextPanel}
+            onClick={contextNextPanel}
             disabled={currentPanelIndex === totalPanels - 1 && !nextPageLink}
           >
             <ArrowRight className="h-8 w-8" />
@@ -287,7 +224,7 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
                 variant="outline"
                 size="sm"
                 disabled={currentPanelIndex === 0 && !prevPageLink}
-                onClick={prevPanel}
+                onClick={contextPrevPanel}
                 className="border-cyber-blue/50 hover:border-cyber-blue mr-2"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
@@ -298,7 +235,7 @@ export function ComicReader({ currentPageNumber }: ComicReaderProps) {
                 variant="outline"
                 size="sm"
                 disabled={currentPanelIndex === totalPanels - 1 && !nextPageLink}
-                onClick={nextPanel}
+                onClick={contextNextPanel}
                 className="border-cyber-blue/50 hover:border-cyber-blue"
               >
                 Next

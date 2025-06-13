@@ -1,5 +1,4 @@
-import { ComicHeader } from "@/components/comic-header"
-import { ComicFooter } from "@/components/comic-footer"
+import { ComicFooter } from "@/components/comic/comic-footer"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -8,15 +7,11 @@ import { ChevronRight } from "lucide-react"
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col">
-      <ComicHeader />
-
       {/* Hero Comic Panel */}
       <div className="flex-grow flex flex-col">
         <div className="relative w-full h-[80vh] overflow-hidden border-y-4 border-cyber-blue/30">
           {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cyber-dark/80 via-transparent to-cyber-dark/80 z-10"></div>
-
-          {/* Galatea Image */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cyber-dark/80 via-transparent to-cyber-dark/80 z-10"></div>          {/* Galatea Image */}
           <Image
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0-Galatea-AI-ODlHATevAI2Uf4BGQSPpefgk16KyCH.png"
             alt="Galatea 2.0"

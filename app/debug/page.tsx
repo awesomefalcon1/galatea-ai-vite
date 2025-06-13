@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ComicHeader } from "@/components/comic-header"
-import { ComicFooter } from "@/components/comic-footer"
+import { ComicFooter } from "@/components/comic/comic-footer"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -45,10 +44,8 @@ export default function DebugPage() {
 
     fetchAllPages()
   }, [])
-
   return (
     <main className="min-h-screen flex flex-col">
-      <ComicHeader />
       <div className="flex-grow container mx-auto px-4 py-12">
         <h1 className="text-4xl font-cyber mb-8 neon-text text-center">Debug Page</h1>
 

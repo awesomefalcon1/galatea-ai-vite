@@ -24,8 +24,7 @@ export const comicPages: ComicPage[] = [
       {
         aspectRatio: "16/9",
         background: "linear-gradient(to bottom, #050714, #0a1a2a)",
-        narration:
-          "NEO-ATHENS, 2089. A city of neon and shadows, where technology has become indistinguishable from humanity.",
+        narration: "NEO-ATHENS, 2089. A city of neon and shadows, where technology has become indistinguishable from humanity.",
       },
       {
         image: "/placeholder.svg?height=400&width=600",

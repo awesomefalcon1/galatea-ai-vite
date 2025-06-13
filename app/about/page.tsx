@@ -1,11 +1,9 @@
-import { ComicHeader } from "@/components/comic-header"
-import { ComicFooter } from "@/components/comic-footer"
+import { ComicFooter } from "@/components/comic/comic-footer"
 import Image from "next/image"
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen flex flex-col">
-      <ComicHeader />
 
       {/* About Header */}
       <div className="w-full bg-cyber-darker border-y-4 border-cyber-blue/30 py-12">

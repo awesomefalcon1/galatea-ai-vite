@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 
 interface LoadingScreenProps {
   pageNumber: number
@@ -64,10 +63,21 @@ export function ComicLoadingScreen({ pageNumber }: LoadingScreenProps) {
   }, [])
 
   return (
-    <div className="w-full h-[80vh] flex flex-col items-center justify-center bg-cyber-dark relative overflow-hidden">
+    <div 
+      className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden"
+      style={{
+        backgroundImage: `url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0-Galatea-AI-ODlHATevAI2Uf4BGQSPpefgk16KyCH.png")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Dark overlay to make text more readable */}
+      <div className="absolute inset-0 bg-cyber-dark/70 z-0"></div>
+
       {/* Background grid effect */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-10"
         style={{
           backgroundImage:
             "linear-gradient(to right, rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px)",
@@ -76,7 +86,7 @@ export function ComicLoadingScreen({ pageNumber }: LoadingScreenProps) {
       ></div>
 
       {/* Animated circles */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
         <div className="w-64 h-64 rounded-full border-4 border-cyber-blue/20 animate-pulse"></div>
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border-4 border-cyber-blue/30 animate-pulse"
@@ -88,19 +98,8 @@ export function ComicLoadingScreen({ pageNumber }: LoadingScreenProps) {
         ></div>
       </div>
 
-      {/* Galatea silhouette */}
-      <div className="relative w-40 h-40 mb-8 z-10 opacity-70">
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0-Galatea-AI-ODlHATevAI2Uf4BGQSPpefgk16KyCH.png"
-          alt="Galatea Silhouette"
-          fill
-          className="object-contain"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-cyber-blue/30 to-cyber-pink/30 mix-blend-overlay"></div>
-      </div>
-
       {/* Loading text */}
-      <div className="z-10 text-center">
+      <div className="z-20 text-center">
         <h2 className="text-3xl font-cyber neon-text mb-2">LOADING COMIC</h2>
         <p className="text-cyber-blue mb-6">Page {pageNumber}</p>
 
@@ -116,18 +115,14 @@ export function ComicLoadingScreen({ pageNumber }: LoadingScreenProps) {
           {loadingText}...
         </p>
 
-        <div className="max-w-md bg-cyber-darker p-4 rounded-lg border border-cyber-blue/20">
-          <p className="text-sm text-gray-400">
-            <span className="text-cyber-pink font-bold">DID YOU KNOW:</span> {randomTip}
-          </p>
-        </div>
+
       </div>
 
       {/* Scan line effect */}
-      <div className="absolute inset-0 scan-line z-20 pointer-events-none"></div>
+      <div className="absolute inset-0 scan-line z-30 pointer-events-none"></div>
 
       {/* Glitch effect */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-cyber-blue/50 z-20 glitch-line"></div>
+      <div className="absolute top-0 left-0 right-0 h-1 bg-cyber-blue/50 z-30 glitch-line"></div>
     </div>
   )
 }

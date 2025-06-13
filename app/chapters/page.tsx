@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ComicHeader } from "@/components/comic-header"
-import { ComicFooter } from "@/components/comic-footer"
+import { ComicFooter } from "@/components/comic/comic-footer"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -43,11 +42,8 @@ export default function ChaptersPage() {
 
     fetchChapters()
   }, [])
-
   return (
     <main className="min-h-screen flex flex-col">
-      <ComicHeader />
-
       {/* Chapter Header */}
       <div className="w-full bg-cyber-darker border-y-4 border-cyber-blue/30 py-12">
         <div className="container mx-auto px-4">

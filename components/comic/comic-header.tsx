@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Menu, BookOpen, X, Home } from "lucide-react"
 import { usePathname } from "next/navigation"
 
-export function ComicHeader() {
+interface ComicHeaderProps {
+  comicTitle?: string
+  currentPanelIndex?: number
+  totalPanels?: number
+}
+
+export function ComicHeader({ comicTitle, currentPanelIndex, totalPanels }: ComicHeaderProps = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMinimal, setIsMinimal] = useState(false)
   const pathname = usePathname()
@@ -15,10 +21,9 @@ export function ComicHeader() {
   useEffect(() => {
     setIsMinimal(pathname.startsWith("/comic/"))
   }, [pathname])
-
   return (
     <header
-      className={`sticky top-0 z-50 w-full backdrop-blur-lg border-b-2 border-cyber-blue/30 transition-all duration-300 ${
+      className={`${isMinimal ? 'fixed' : 'sticky'} top-0 z-50 w-full backdrop-blur-lg border-b-2 border-cyber-blue/30 transition-all duration-300 ${
         isMinimal ? "bg-cyber-dark/80 py-2" : "bg-cyber-dark/90 py-4"
       }`}
     >
@@ -35,22 +40,35 @@ export function ComicHeader() {
               GALATEA 2.0
             </span>
           </Link>
-        </div>
-
-        {isMinimal ? (
-          // Minimal navigation for comic pages
-          <div className="flex items-center gap-2">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-                <Home className="h-4 w-4 mr-1" />
-                Home
-              </Button>
-            </Link>
-            <Link href="/chapters">
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-                Chapters
-              </Button>
-            </Link>
+        </div>        {isMinimal ? (
+          // Minimal navigation for comic pages with comic title
+          <div className="flex items-center gap-4 flex-1 justify-between">
+            {/* Comic Title in center */}
+            {comicTitle && (
+              <div className="flex-1 text-center">
+                <h1 className="text-lg font-cyber neon-text">{comicTitle}</h1>
+                {currentPanelIndex !== undefined && totalPanels !== undefined && (
+                  <div className="text-xs text-cyber-blue mt-1">
+                    Panel {currentPanelIndex + 1} of {totalPanels}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Navigation buttons */}
+            <div className="flex items-center gap-2">
+              <Link href="/">
+                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                  <Home className="h-4 w-4 mr-1" />
+                  Home
+                </Button>
+              </Link>
+              <Link href="/chapters">
+                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                  Chapters
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           // Full navigation for other pages
