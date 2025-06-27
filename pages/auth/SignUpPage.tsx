@@ -71,25 +71,29 @@ export function SignUpPage() {
   return (
     <AuthLayout>
       {/* Left Side - Email/Password Form */}
-      <div className="w-full">
-        <AuthForm
-          mode="signup"
-          formData={formData}
-          onChange={handleFieldChange}
-          onSubmit={handleSubmit}
-          loading={loading}
-          error={error}
-        />
+      <div className="flex items-center justify-center min-h-screen p-8 lg:p-16">
+        <div className="w-full max-w-md">
+          <AuthForm
+            mode="signup"
+            formData={formData}
+            onChange={handleFieldChange}
+            onSubmit={handleSubmit}
+            loading={loading}
+            error={error}
+          />
+        </div>
       </div>
 
       {/* Right Side - Social Login Panel */}
-      <div className="w-full">
-        <SocialLoginPanel
-          mode="signup"
-          onGoogleAuth={handleGoogleSignUp}
-          onFacebookAuth={handleFacebookSignUp}
-          loading={loading}
-        />
+      <div className="flex items-center justify-center min-h-screen p-8 lg:p-16 bg-gray-900/20">
+        <div className="w-full max-w-md">
+          <SocialLoginPanel
+            mode="signup"
+            onGoogleAuth={handleGoogleSignUp}
+            onFacebookAuth={handleFacebookSignUp}
+            loading={loading}
+          />
+        </div>
       </div>
     </AuthLayout>
   );

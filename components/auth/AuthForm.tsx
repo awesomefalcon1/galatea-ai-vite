@@ -24,19 +24,9 @@ export function AuthForm({ mode, formData, onChange, onSubmit, loading, error }:
   const isSignUp = mode === 'signup';
 
   return (
-    <div className="comic-panel p-8 backdrop-blur-sm">
+    <div className="h-full">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <img
-            src="/galatea-ai-white.png"
-            alt="Galatea AI"
-            className="w-12 h-12"
-          />
-          <h1 className="text-2xl font-cyber text-white">
-            FRIENDS WANTED
-          </h1>
-        </div>
         <div className="flex items-center justify-center gap-2 mb-2">
           <HiSparkles className="text-[#ff0080] animate-pulse text-lg" />
           <h2 className="text-xl font-bold text-[#00ffff]">

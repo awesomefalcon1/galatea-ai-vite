@@ -12,7 +12,7 @@ export function SocialLoginPanel({ mode, onGoogleAuth, onFacebookAuth, loading }
   const isSignUp = mode === 'signup';
 
   return (
-    <div className="comic-panel p-8 backdrop-blur-sm">
+    <div className="h-full">
       {/* Header */}
       <div className="text-center mb-8">
         <h3 className="text-xl font-bold text-[#ff0080] mb-4">

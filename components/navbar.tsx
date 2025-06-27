@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { FaRobot, FaUsers, FaBrain, FaSignOutAlt, FaUser } from "react-icons/fa"
+import { FaRobot, FaUsers, FaBrain, FaSignOutAlt, FaUser, FaHeart } from "react-icons/fa"
 import { HiMenu, HiX } from "react-icons/hi"
 import { useAuth } from "@contexts/AuthContext"
 
@@ -52,6 +52,13 @@ export function Navbar() {
             >
               <FaUsers className="text-sm" />
               Companions
+            </Link>
+            <Link 
+              to="/matches" 
+              className="text-gray-300 hover:text-[#ff0080] transition-colors duration-300 flex items-center gap-2"
+            >
+              <FaHeart className="text-sm" />
+              Discover
             </Link>
             <a 
               href="/#how-it-works" 

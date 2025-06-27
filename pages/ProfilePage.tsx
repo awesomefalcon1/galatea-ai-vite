@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@contexts/AuthContext';
-import { FaGoogle, FaFacebook, FaEnvelope, FaUser, FaEdit, FaSave, FaTimes, FaCheck, FaUnlink, FaLink } from 'react-icons/fa';
+import { FaGoogle, FaFacebook, FaEnvelope, FaUser, FaEdit, FaSave, FaTimes, FaCheck, FaUnlink, FaLink, FaHeart, FaArrowRight } from 'react-icons/fa';
 import { HiSparkles } from 'react-icons/hi2';
 import { updateProfile, linkWithPopup, GoogleAuthProvider, FacebookAuthProvider, unlink, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { Link } from 'react-router-dom';
 
 export function ProfilePage() {
   const { currentUser, loginWithGoogle, loginWithFacebook } = useAuth();
@@ -149,6 +150,21 @@ export function ProfilePage() {
               <HiSparkles className="text-[#ff0080] text-2xl" />
             </div>
             <p className="text-gray-300">Manage your account and connected services</p>
+            
+            {/* Dating Profile CTA */}
+            <div className="mt-6">
+              <Link 
+                to="/dating-profile"
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-[#ff0080] to-[#00ffff] hover:from-[#ff0080]/80 hover:to-[#00ffff]/80 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
+              >
+                <FaHeart />
+                Create Dating Profile
+                <FaArrowRight />
+              </Link>
+              <p className="text-sm text-gray-400 mt-2">
+                Find meaningful connections with AI companions
+              </p>
+            </div>
           </div>
 
           {/* Messages */}
