@@ -2,6 +2,8 @@ import { FaRobot, FaHeart, FaBrain, FaUsers } from "react-icons/fa"
 import { GiArtificialIntelligence, GiConversation } from "react-icons/gi"
 import { FaArrowRight } from "react-icons/fa"
 import { HiSparkles } from "react-icons/hi2"
+import { Footer } from "@components/footer"
+
 function HowItWorks() {
   return (
     <div className="pt-16">
@@ -153,7 +155,7 @@ export function HomePage() {
           {/* Title Overlay */}
           <div className="absolute inset-0 flex flex-col justify-center items-start z-20 p-8 md:p-16">
             <div className="text-left max-w-4xl">
-              <h1 className="font-cyber text-5xl md:text-7xl mb-4 glitch-smooth text-white" data-text="FRIENDS WANTED">
+              <h1 className="font-cyber text-5xl md:text-7xl mb-4 glitch-small" data-text="FRIENDS WANTED">
                 <span className="text-white">FRIENDS </span>
                 <span className="text-[#00ffff]">WANTED</span>
               </h1>
@@ -166,16 +168,16 @@ export function HomePage() {
                   <HiSparkles className="text-[#ff0080] animate-pulse" />
                 </p>
                 <div className="flex flex-wrap gap-3 mb-8">
-                  <span className="px-3 py-1 bg-[#00ffff]/20 border border-[#00ffff]/50 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-[#00ffff]/20 border border-[#00ffff]/50 rounded-full text-sm text-white">
                     AI COMPANIONS
                   </span>
-                  <span className="px-3 py-1 bg-[#ff0080]/20 border border-[#ff0080]/50 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-[#ff0080]/20 border border-[#ff0080]/50 rounded-full text-sm text-white">
                     REAL CONNECTIONS
                   </span>
-                  <span className="px-3 py-1 bg-[#00ffff]/20 border border-[#00ffff]/50 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-[#00ffff]/20 border border-[#00ffff]/50 rounded-full text-sm text-white">
                     CONFIDENCE BUILDING
                   </span>
-                  <span className="px-3 py-1 bg-[#ff0080]/20 border border-[#ff0080]/50 rounded-full text-sm">SOCIAL PRACTICE</span>
+                  <span className="px-3 py-1 bg-[#ff0080]/20 border border-[#ff0080]/50 rounded-full text-sm text-white">SOCIAL PRACTICE</span>
                 </div>
                 
                 <div className="mb-8">
@@ -197,6 +199,7 @@ export function HomePage() {
           </div>
         </div>
       <HowItWorks />
+      <Footer />
       </div>
         
   )
