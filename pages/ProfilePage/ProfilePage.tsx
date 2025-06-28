@@ -5,7 +5,7 @@ import { ProfileSidebar } from './ProfileSidebar';
 import { SocialsScreen } from './SocialsScreen';
 import { ProfileSetupScreen } from './ProfileSetupScreen';
 import { FriendsScreen } from './FriendsScreen';
-import { DatingProfileScreen } from './DatingProfileScreen';
+import { DatingProfileScreenMUI } from './DatingProfileScreenMUI';
 
 function ProfilePageContent() {
   const { currentUser } = useAuth();
@@ -18,7 +18,7 @@ function ProfilePageContent() {
       case 'profile-setup':
         return <ProfileSetupScreen />;
       case 'dating-profile':
-        return <DatingProfileScreen />;
+        return <DatingProfileScreenMUI />;
       case 'friends':
         return <FriendsScreen />;
       default:
