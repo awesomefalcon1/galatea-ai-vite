@@ -48,8 +48,8 @@ import {
   getUserProfile,
   saveUserProfile,
   DatingProfile,
-  UserPreferences
-} from './firebaseIntegration/datingProfile';
+  ProfilePreferences
+} from '@/lib/datingProfile';
 
 interface OnboardingStep {
   id: string;
@@ -65,30 +65,27 @@ const ProfileOnboardingScreen: React.FC = () => {
   
   const [currentStep, setCurrentStep] = useState(0);
   const [profile, setProfile] = useState<Partial<DatingProfile>>({
+    uid: currentUser?.uid || '',
     displayName: currentUser?.displayName || '',
     bio: '',
     age: 25,
     location: '',
-    profilePicture: currentUser?.photoURL || '',
+    photos: currentUser?.photoURL ? [currentUser.photoURL] : [],
     interests: [],
-    relationshipGoals: '',
-    occupation: '',
-    education: '',
-    height: '',
-    lifestyle: {
-      smoking: '',
-      drinking: '',
-      exercise: '',
-      diet: ''
-    }
+    lookingFor: 'dating',
+    genderIdentity: '',
+    genderPreference: [],
+    verified: false,
+    lastActive: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date()
   });
   
-  const [preferences, setPreferences] = useState<Partial<UserPreferences>>({
-    ageRange: [22, 35],
+  const [preferences, setPreferences] = useState<Partial<ProfilePreferences>>({
+    ageRange: { min: 22, max: 35 },
     maxDistance: 50,
-    interests: [],
-    relationshipType: '',
-    dealBreakers: []
+    genderPreference: [],
+    lookingFor: []
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -134,7 +131,8 @@ const ProfileOnboardingScreen: React.FC = () => {
     setError(null);
 
     try {
-      await saveUserProfile(currentUser.uid, profile as DatingProfile);
+      const profileWithUid = { ...profile, uid: currentUser.uid };
+      await saveUserProfile(profileWithUid as DatingProfile);
       // Navigate to swipes page
       navigate('/swipes');
     } catch (error) {
@@ -164,7 +162,7 @@ const ProfileOnboardingScreen: React.FC = () => {
       <Stack spacing={4} alignItems="center">
         <Box sx={{ position: 'relative' }}>
           <Avatar
-            src={profile.profilePicture}
+            src={profile.photos?.[0]}
             sx={{ 
               width: 120, 
               height: 120,
@@ -239,9 +237,9 @@ const ProfileOnboardingScreen: React.FC = () => {
 
         <TextField
           fullWidth
-          label="Occupation"
-          value={profile.occupation}
-          onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
+          label="About your interests or hobbies"
+          value={profile.bio}
+          onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
           variant="outlined"
         />
       </Stack>
@@ -284,8 +282,8 @@ const ProfileOnboardingScreen: React.FC = () => {
         <FormControl fullWidth>
           <InputLabel>What are you looking for?</InputLabel>
           <Select
-            value={profile.relationshipGoals}
-            onChange={(e) => setProfile(prev => ({ ...prev, relationshipGoals: e.target.value }))}
+            value={profile.lookingFor}
+            onChange={(e) => setProfile(prev => ({ ...prev, lookingFor: e.target.value as any }))}
             label="What are you looking for?"
           >
             {relationshipGoalOptions.map((goal) => (
@@ -310,8 +308,11 @@ const ProfileOnboardingScreen: React.FC = () => {
         <Box>
           <Typography gutterBottom>Age Range</Typography>
           <Slider
-            value={preferences.ageRange || [22, 35]}
-            onChange={(_, newValue) => setPreferences(prev => ({ ...prev, ageRange: newValue as number[] }))}
+            value={[preferences.ageRange?.min || 22, preferences.ageRange?.max || 35]}
+            onChange={(_, newValue) => {
+              const [min, max] = newValue as number[];
+              setPreferences(prev => ({ ...prev, ageRange: { min, max } }));
+            }}
             valueLabelDisplay="auto"
             min={18}
             max={65}
@@ -355,7 +356,7 @@ const ProfileOnboardingScreen: React.FC = () => {
         <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
           <Stack spacing={2} alignItems="center">
             <Avatar
-              src={profile.profilePicture}
+              src={profile.photos?.[0]}
               sx={{ width: 80, height: 80 }}
             >
               <PersonAddIcon />
@@ -425,7 +426,7 @@ const ProfileOnboardingScreen: React.FC = () => {
       case 1:
         return profile.bio && profile.bio.length >= 10;
       case 2:
-        return profile.interests && profile.interests.length >= 3 && profile.relationshipGoals;
+        return profile.interests && profile.interests.length >= 3 && profile.lookingFor;
       case 3:
         return preferences.ageRange && preferences.maxDistance;
       case 4:
