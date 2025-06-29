@@ -39,20 +39,40 @@ export function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
+            {currentUser && (
+              <>
+                <Link
+                  to="/swipes"
+                  className="flex items-center gap-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300 px-2 py-1 rounded-lg border border-transparent hover:border-[#00ffff]/30"
+                >
+                  <FaHeart className="text-sm" />
+                  Discover
+                </Link>
+                <Link
+                  to="/matches"
+                  className="flex items-center gap-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300 px-2 py-1 rounded-lg border border-transparent hover:border-[#00ffff]/30"
+                >
+                  <FaUsers className="text-sm" />
+                  Matches
+                </Link>
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300 px-2 py-1 rounded-lg border border-transparent hover:border-[#00ffff]/30"
+                >
+                  <FaUser className="text-sm" />
+                  Profile
+                </Link>
+              </>
+            )}
             
             {/* Auth buttons */}
             <div className="flex items-center gap-3">
               {currentUser ? (
                 // Authenticated user menu
                 <div className="flex items-center gap-3">
-                  <Link
-                    to="/profile"
-                    className="flex items-center gap-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300 px-2 py-1 rounded-lg border border-transparent hover:border-[#00ffff]/30"
-                  >
-                    <span className="text-sm cursor-pointer">
-                      Welcome, {currentUser.displayName || currentUser.email?.split('@')[0] || 'Friend'}
-                    </span>
-                  </Link>
+                  <span className="text-sm text-gray-300">
+                    Welcome, {currentUser.displayName || currentUser.email?.split('@')[0] || 'Friend'}
+                  </span>
                   <button
                     onClick={handleLogout}
                     className="text-gray-300 hover:text-[#ff0080] transition-colors duration-300 px-4 py-2 rounded-lg border border-transparent hover:border-[#ff0080]/30 flex items-center gap-2"
@@ -94,48 +114,91 @@ export function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden bg-[#050714]/98 border-t border-[#00ffff]/30">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link
-                to="/about"
-                className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <FaRobot className="text-sm" />
-                About
-              </Link>
-              <Link
-                to="/companions"
-                className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <FaUsers className="text-sm" />
-                Companions
-              </Link>
-              <a
-                href="/#how-it-works"
-                className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <FaBrain className="text-sm" />
-                How It Works
-              </a>
-              
-              {/* Mobile auth buttons */}
-              <div className="px-3 py-2 space-y-2">
-                <Link
-                  to="/auth/signin"
-                  className="block w-full text-center text-gray-300 hover:text-[#00ffff] py-2 rounded-lg border border-[#00ffff]/30 transition-colors duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/auth/signup"
-                  className="block w-full text-center bg-[#00ffff] hover:bg-[#c0fdff] text-black font-bold py-2 rounded-lg transition-all duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </div>
+              {currentUser ? (
+                // Authenticated mobile menu
+                <>
+                  <Link
+                    to="/swipes"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FaHeart className="text-sm" />
+                    Discover
+                  </Link>
+                  <Link
+                    to="/matches"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FaUsers className="text-sm" />
+                    Matches
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FaUser className="text-sm" />
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#ff0080] transition-colors duration-300 w-full text-left"
+                  >
+                    <FaSignOutAlt className="text-sm" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                // Unauthenticated mobile menu
+                <>
+                  <Link
+                    to="/about"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FaRobot className="text-sm" />
+                    About
+                  </Link>
+                  <Link
+                    to="/companions"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FaUsers className="text-sm" />
+                    Companions
+                  </Link>
+                  <a
+                    href="/#how-it-works"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-[#00ffff] transition-colors duration-300"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FaBrain className="text-sm" />
+                    How It Works
+                  </a>
+                  
+                  {/* Mobile auth buttons */}
+                  <div className="px-3 py-2 space-y-2">
+                    <Link
+                      to="/auth/signin"
+                      className="block w-full text-center text-gray-300 hover:text-[#00ffff] py-2 rounded-lg border border-[#00ffff]/30 transition-colors duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/auth/signup"
+                      className="block w-full text-center bg-[#00ffff] hover:bg-[#c0fdff] text-black font-bold py-2 rounded-lg transition-all duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

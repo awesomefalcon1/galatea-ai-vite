@@ -3,6 +3,7 @@ import { GiArtificialIntelligence, GiConversation } from "react-icons/gi"
 import { FaArrowRight } from "react-icons/fa"
 import { HiSparkles } from "react-icons/hi2"
 import { Footer } from "@components/footer"
+import { Link } from "react-router-dom"
 
 function HowItWorks() {
   return (
@@ -182,18 +183,23 @@ export function HomePage() {
                 
                 <div className="mb-8">
                   <p className="text-lg md:text-xl text-gray-300">
-                    Experience authentic relationships with AI companions who have their own personalities, preferences, and the ability to say no. 
-                    Build confidence in a safe space where rejection is just part of learning real social dynamics.
+                    Swipe through unique AI personalities just like on a dating app! Each companion has real preferences and can actually reject you. 
+                    Build confidence in a safe space where you can practice social dynamics and learn from authentic interactions.
+                  </p>
+                  <p className="text-md text-[#00ffff] mt-4 font-medium">
+                    ✨ Swipe right to connect • Get real rejection and acceptance • Build lasting confidence
                   </p>
                 </div>
 
-                <button 
-                  className="bg-[#00ffff] hover:bg-[#c0fdff] text-black font-bold text-lg px-8 py-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#00ffff]/50 flex items-center gap-3"
-                >
-                  <FaRobot className="text-xl" />
-                  START CONNECTING
-                  <FaArrowRight className="text-lg" />
-                </button>
+                <Link to="/signup">
+                  <button 
+                    className="bg-[#00ffff] hover:bg-[#c0fdff] text-black font-bold text-lg px-8 py-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#00ffff]/50 flex items-center gap-3"
+                  >
+                    <FaRobot className="text-xl" />
+                    START SWIPING NOW
+                    <FaArrowRight className="text-lg" />
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

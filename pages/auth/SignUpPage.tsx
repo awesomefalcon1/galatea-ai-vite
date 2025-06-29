@@ -36,7 +36,7 @@ export function SignUpPage() {
       setError('');
       setLoading(true);
       await signup(formData.email, formData.password, formData.displayName);
-      navigate('/');
+      navigate('/onboarding');
     } catch (error: any) {
       setError('Failed to create account: ' + error.message);
     }
@@ -50,7 +50,7 @@ export function SignUpPage() {
       setLoading(true);
       setSocialProvider('google');
       await loginWithGoogle();
-      navigate('/');
+      navigate('/onboarding');
     } catch (error: any) {
       setError('Failed to sign up with Google: ' + error.message);
     }
@@ -65,7 +65,7 @@ export function SignUpPage() {
       setLoading(true);
       setSocialProvider('facebook');
       await loginWithFacebook();
-      navigate('/');
+      navigate('/onboarding');
     } catch (error: any) {
       setError('Failed to sign up with Facebook: ' + error.message);
     }

@@ -26,7 +26,7 @@ export function SignInPage() {
       setError("");
       setLoading(true);
       await login(formData.email, formData.password);
-      navigate("/");
+      navigate("/onboarding");
     } catch (error: any) {
       setError("Failed to sign in: " + error.message);
     }
@@ -40,7 +40,7 @@ export function SignInPage() {
       setLoading(true);
       setSocialProvider('google');
       await loginWithGoogle();
-      navigate("/");
+      navigate("/onboarding");
     } catch (error: any) {
       setError("Failed to sign in with Google: " + error.message);
     }
@@ -55,7 +55,7 @@ export function SignInPage() {
       setLoading(true);
       setSocialProvider('facebook');
       await loginWithFacebook();
-      navigate("/");
+      navigate("/onboarding");
     } catch (error: any) {
       setError("Failed to sign in with Facebook: " + error.message);
     }
