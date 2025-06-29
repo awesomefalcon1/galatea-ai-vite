@@ -24,7 +24,6 @@ import {
   alpha,
   LinearProgress,
   Alert,
-  Grid,
   Fab
 } from '@mui/material';
 import {
@@ -555,28 +554,37 @@ const SwipeResults: React.FC<{ results: SwipeResult[]; onRestart: () => void }> 
         Your Swipe Results
       </Typography>
       
-      <Grid container spacing={3} sx={{ mt: 2 }}>
+      <Box 
+        sx={{ 
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)'
+          },
+          gap: 3,
+          mt: 2
+        }}
+      >
         {results.map((result) => (
-          <Grid item xs={12} sm={6} md={4} key={result.uuid}>
-            <Card elevation={4} sx={{ borderRadius: 3 }}>
-              <CardMedia
-                component="img"
-                height="200"
-                image={result.imageUrl}
-                alt={result.name}
+          <Card elevation={4} sx={{ borderRadius: 3 }} key={result.uuid}>
+            <CardMedia
+              component="img"
+              height="200"
+              image={result.imageUrl}
+              alt={result.name}
+            />
+            <CardContent>
+              <Typography variant="h6">{result.name}</Typography>
+              <Chip
+                label={result.status === 'accepted' ? 'Matched!' : 'No Match'}
+                color={result.status === 'accepted' ? 'success' : 'default'}
+                sx={{ mt: 1 }}
               />
-              <CardContent>
-                <Typography variant="h6">{result.name}</Typography>
-                <Chip
-                  label={result.status === 'accepted' ? 'Matched!' : 'No Match'}
-                  color={result.status === 'accepted' ? 'success' : 'default'}
-                  sx={{ mt: 1 }}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
+            </CardContent>
+          </Card>
         ))}
-      </Grid>
+      </Box>
       
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Stack direction="row" spacing={2} justifyContent="center">
